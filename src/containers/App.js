@@ -1,9 +1,11 @@
 import React from 'react';
 
-const App = () => {
-  return(
-    <div>SUP DAWG</div>
-  );
+class App extends React.Component {
+  render() {
+    return(
+      <div>YOLO</div>
+    )
+  }
 }
 
 export default App;
