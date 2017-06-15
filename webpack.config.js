@@ -1,7 +1,8 @@
 const path = require('path');
+require("babel-polyfill");
 
 const config = {
-  entry: './src/index.js',
+  entry: ['babel-polyfill','./src/index.js'],
 
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -26,7 +27,7 @@ const config = {
       },
 
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|gif|woff2|woff1|eot|woff|ttf)$/,
         use: [
           'file-loader'
         ]
