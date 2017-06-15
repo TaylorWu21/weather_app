@@ -2,17 +2,26 @@ import React, { Component } from 'react';
 import { Form, Input } from 'semantic-ui-react';
 
 class SearchBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { search: '' };
-  }
-
-  handleChange = (e, { value }) => this.setState({ search: value });
+  state = { search: '' };
 
   render() {
     return(
-      <Form>
-        <Input fluid icon='search' placeholder='Enter in zipcode or City' onChange={this.handleChange} />
+      <Form 
+        onSubmit={
+          (e) => {
+            e.preventDefault();
+            this.props.handleSubmit(this.state.search);
+            this.setState({ search: '' });
+          }
+        }
+      >
+        <Input 
+          fluid 
+          icon='search' 
+          placeholder='Enter in zipcode or City'
+          value={this.state.search}
+          onChange={ (e, { value }) => this.setState({ search: value }) } 
+        />
       </Form>
     );
   }
