@@ -7,7 +7,7 @@ const FiveDaysForecast = ({ fiveDayForecast }) => {
 
   if(Object.keys(fiveDayForecast).length < 1) return(<Header as='h1' textAlign='center'>No City Chosen Yet</Header>)
 
-  let count = 1;
+  let count = 4;
   const forecasts = fiveDayForecast.list.map( (weather, i) => {
     if(count === 4) {
       count = 1;

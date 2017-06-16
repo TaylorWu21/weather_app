@@ -19,9 +19,17 @@ const API = '20e3bd8c200716ba6c6879b78169d27a';
 class App extends React.Component {
   state = { activeItem: 'Current', currentWeather: {} , error: false, fiveDaysForecast: {} }
 
+  componentDidMount() {
+    if(localStorage.term) {
+      this.handleSubmit(localStorage.term);
+    }
+  }
+
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   handleSubmit = (term) => {
+    // window.localstorage
+    localStorage.setItem('term', term);
 
     // check if its a zipcode or city name
     const isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(term);
@@ -29,26 +37,22 @@ class App extends React.Component {
       `${ROOT_URL}weather?appid=${API}&${isValidZip? 'zip' : 'q' }=${term},us&units=imperial&mode=json`;
     const FIVE_DAY_WEATHER_URL = 
       `${ROOT_URL}forecast?appid=${API}&${isValidZip? 'zip' : 'q' }=${term},us&units=imperial&mode=json`;
+    
+    this.apiCall(CURRENT_WEATHER_URL, 'currentWeather');
+    this.apiCall(FIVE_DAY_WEATHER_URL, 'fiveDaysForecast');
+  }
 
-    if(this.state.activeItem === 'Current') {
-      axios.get(CURRENT_WEATHER_URL)
-      .then( response => {
-        this.setState({ currentWeather: response.data, error: false });
-      })
-      .catch( error => {
-        console.log('error', error)
-        this.setState({ error: true });
-      });
-    } else {
-      axios.get(FIVE_DAY_WEATHER_URL)
-      .then( response => {
-        this.setState({ fiveDaysForecast: response.data, error: false });
-      })
-      .catch( error => {
-        console.log('error', error)
-        this.setState({ error: true });
-      });
-    }
+  apiCall = (url, stateObj) => {
+    axios.get(url)
+    .then(res => {
+      this.setState({ [stateObj]: res.data, error: false});
+    })
+    .catch( err => {
+      localStorage.removeItem("term");
+      console.log('error', err);
+      this.setState({ error: true});
+      setTimeout( () => { this.setState({ error: false }) }, 10000);
+    })
   }
 
   render() {
@@ -56,7 +60,7 @@ class App extends React.Component {
 
     return(
       <Container>
-        <Header as='h1'textAlign='center'>Easy Weather App</Header>
+        <Header as='h1'textAlign='center'>Taylor's Dope Weather App</Header>
         <SearchBar handleSubmit={this.handleSubmit} />
         {
           error ? 
