@@ -12,7 +12,7 @@ const FiveDaysForecast = ({ fiveDayForecast }) => {
     if(count === 4) {
       count = 1;
       return(
-        <Grid.Column mobile={16} tablet={8} computer={2} key={i} >
+        <Grid.Column mobile={8} tablet={4} computer={3} key={i} >
           <Forecast forecast={weather} />
         </Grid.Column>
       );

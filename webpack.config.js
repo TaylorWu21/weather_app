@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 // require("babel-polyfill");
 
 const VENDOR_LIBS = [
@@ -15,7 +16,7 @@ const config = {
 
   output: {
     path: path.join(__dirname, 'build'),
-    filename: '[name].js'
+    filename: '[name].[chunkhash].js'
   },
 
   module: {
@@ -45,8 +46,11 @@ const config = {
   },
 
   plugins: [
-    new webpacl.optimize.CommonsChunkPlugin({
-      name: 'vendor'
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor', 'manifest']
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/index.html'
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

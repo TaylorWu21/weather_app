@@ -8,12 +8,15 @@ const CurrentWeather = ({ forecast }) => {
   
   // Weather Icon
   let icon;
+  let color;
   switch(forecast.weather[0].icon) {
     case '01d':
       icon = 'sun';
+      color = 'orange';
       break;
     case '01n':
       icon = 'moon';
+      color = 'black';
       break;
     case '02d':
     case '02n':
@@ -22,6 +25,7 @@ const CurrentWeather = ({ forecast }) => {
     case '04n':
     case '04d':
       icon = 'cloud';
+      color = 'grey';
       break;
     case '09d':
     case '09n':
@@ -32,19 +36,24 @@ const CurrentWeather = ({ forecast }) => {
     case '11d':
     case '11n':
       icon = 'lightning';
+      color = 'yellow';
       break;
     case '13d':
     case '13n':
       icon = 'snowflake outline';
       break;
     default:
-      icon = 'cloud';
+      icon = 'sun';
+      color = 'black';
       break;
   }
 
-  const date = moment.unix(forecast.dt).format("dddd, MMMM D, YYYY");
+  const date = moment.unix(forecast.dt).format("ddd, MMMM D, YYYY");
+  const time = moment.unix(forecast.dt).format("h:mm A");
   return(
     <Card>
+      <Card.Content extra color='blue'>
+      </Card.Content>
       <Card.Content>
         <Card.Header>
           {forecast.name}
@@ -52,17 +61,17 @@ const CurrentWeather = ({ forecast }) => {
         <Card.Meta>
           <span className='date'>
             {date}
+            <br />
+            {time}
           </span>
         </Card.Meta>
         <Card.Description>
-          <Icon name='thermometer' />{Math.round(forecast.main.temp)} F
+          <Icon name='thermometer' color='black' />{Math.round(forecast.main.temp)} F
           <br />
-          <Icon name={icon} />{forecast.weather[0].description}
+          <Icon name={icon} color={color} />{forecast.weather[0].description}
           <br />
-          <Icon name='leaf' />{Math.round(forecast.wind.speed)} mph
+          <Icon name='leaf' color='green' />{Math.round(forecast.wind.speed)} mph
         </Card.Description>
-      </Card.Content>
-      <Card.Content extra>
       </Card.Content>
     </Card>
   );
