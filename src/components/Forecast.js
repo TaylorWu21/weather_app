@@ -1,18 +1,14 @@
-import React, { Component } from 'react';
-import dateFormat from 'dateformat';
-
+import React from 'react';
+import moment from 'moment';
 import { Header, Card, Image, Icon } from 'semantic-ui-react';
 
-const CurrentWeather = ({ data }) => {
-  console.log(data);
+const CurrentWeather = ({ forecast }) => {
 
-  if(Object.keys(data) < 1) return(<Header as='h1' textAlign='center'>No City Chosen Yet</Header>);
-
-  const date = dateFormat(new Date(), "fullDate");
-
+  if(Object.keys(forecast) < 1) return(<Header as='h1' textAlign='center'>No City Chosen Yet</Header>);
+  
+  // Weather Icon
   let icon;
-  console.log(data.weather[0].icon);
-  switch(data.weather[0].icon) {
+  switch(forecast.weather[0].icon) {
     case '01d':
       icon = 'sun';
       break;
@@ -42,17 +38,16 @@ const CurrentWeather = ({ data }) => {
       icon = 'snowflake outline';
       break;
     default:
-      icon = '';
+      icon = 'cloud';
       break;
   }
 
-  console.log(icon);
-
+  const date = moment.unix(forecast.dt).format("dddd, MMMM D, YYYY");
   return(
     <Card>
       <Card.Content>
         <Card.Header>
-          {data.name}
+          {forecast.name}
         </Card.Header>
         <Card.Meta>
           <span className='date'>
@@ -60,11 +55,11 @@ const CurrentWeather = ({ data }) => {
           </span>
         </Card.Meta>
         <Card.Description>
-          <Icon name='thermometer' />{Math.round(data.main.temp)} F
+          <Icon name='thermometer' />{Math.round(forecast.main.temp)} F
           <br />
-          <Icon name={icon} />{data.weather[0].description}
+          <Icon name={icon} />{forecast.weather[0].description}
           <br />
-          <Icon name='leaf' />{Math.round(data.wind.speed)} mph
+          <Icon name='leaf' />{Math.round(forecast.wind.speed)} mph
         </Card.Description>
       </Card.Content>
       <Card.Content extra>

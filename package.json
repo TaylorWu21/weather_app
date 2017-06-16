@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
-    "build": "yarn run clean && webpack",
+    "build": "NODE_ENV=production yarn run clean && webpack",
     "start": "webpack --config webpack.config.js",
     "serve": "webpack-dev-server"
   },
@@ -25,7 +25,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "babel-polyfill": "^6.23.0",
-    "dateformat": "^2.0.0",
+    "moment": "^2.18.1",
     "react": "^15.6.0",
     "react-dom": "^15.6.0",
     "semantic-ui-css": "^2.2.10",

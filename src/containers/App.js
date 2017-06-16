@@ -1,52 +1,73 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { 
   Container, 
   Header,
   Input,
-  Menu
+  Menu,
+  Message
 } from 'semantic-ui-react';
 
 import SearchBar from '../components/SearchBar';
-import CurrentWeather from  '../components/CurrentWeather';
+import Forecast from  '../components/Forecast';
+import FiveDaysForecast from '../components/FiveDaysForecast';
 
 // API Variables
-const ROOT_URL = 'http://api.openweathermap.org/data/2.5/weather'
+const ROOT_URL = 'http://api.openweathermap.org/data/2.5/'
 const API = '20e3bd8c200716ba6c6879b78169d27a';
 
-class App extends Component {
-  state = { activeItem: 'Current', weather: {} }
+class App extends React.Component {
+  state = { activeItem: 'Current', currentWeather: {} , error: false, fiveDaysForecast: {} }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   handleSubmit = (term) => {
+
+    // check if its a zipcode or city name
     const isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(term);
-    if(isValidZip) {
-      axios.get(`${ROOT_URL}?appid=${API}&zip=${term},us&units=imperial&mode=json`)
+    const CURRENT_WEATHER_URL = 
+      `${ROOT_URL}weather?appid=${API}&${isValidZip? 'zip' : 'q' }=${term},us&units=imperial&mode=json`;
+    const FIVE_DAY_WEATHER_URL = 
+      `${ROOT_URL}forecast?appid=${API}&${isValidZip? 'zip' : 'q' }=${term},us&units=imperial&mode=json`;
+
+    if(this.state.activeItem === 'Current') {
+      axios.get(CURRENT_WEATHER_URL)
       .then( response => {
-        this.setState({ weather: response.data });
+        this.setState({ currentWeather: response.data, error: false });
       })
       .catch( error => {
-        console.log(error);
+        console.log('error', error)
+        this.setState({ error: true });
       });
     } else {
-      axios.get(`${ROOT_URL}?appid=${API}&q=${term},us&units=imperial&mode=json`)
+      axios.get(FIVE_DAY_WEATHER_URL)
       .then( response => {
-        this.setState({ weather: response.data });
+        this.setState({ fiveDaysForecast: response.data, error: false });
       })
       .catch( error => {
-        console.log(error);
+        console.log('error', error)
+        this.setState({ error: true });
       });
     }
   }
 
   render() {
-    const { activeItem, weather } = this.state
+    const { activeItem, currentWeather, error } = this.state
 
     return(
       <Container>
-        <Header as='h1'textAlign='center'>Taytay's Weather App</Header>
+        <Header as='h1'textAlign='center'>Easy Weather App</Header>
         <SearchBar handleSubmit={this.handleSubmit} />
+        {
+          error ? 
+            <Message
+              header='Failed to Find City'
+              content='Please enter a valid city name or zipcode in the US'
+              negative
+            /> 
+          : 
+            null 
+        }
         <Menu fluid widths={2} >
           <Menu.Item 
             name='Current' 
@@ -59,7 +80,13 @@ class App extends Component {
             onClick={this.handleItemClick} 
           />
         </Menu>
-        <CurrentWeather data={weather} />
+        { 
+          this.state.activeItem === 'Current' ? 
+            <Forecast forecast={currentWeather} /> 
+          : 
+            <FiveDaysForecast fiveDayForecast={this.state.fiveDaysForecast} />
+        }
+        
       </Container>
     )
   }

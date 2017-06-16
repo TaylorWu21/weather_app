@@ -1,13 +1,21 @@
+const webpack = require('webpack');
 const path = require('path');
-require("babel-polyfill");
+// require("babel-polyfill");
+
+const VENDOR_LIBS = [
+  'react', 'axios', 'moment', 
+  'semantic-ui-react', 'semantic-ui-css'
+]
 
 const config = {
-  entry: ['babel-polyfill','./src/index.js'],
+  entry: {
+    bundle: './src/index.js',
+    vendor: VENDOR_LIBS
+  },
 
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js',
-    publicPath: "build/"
+    path: path.join(__dirname, 'build'),
+    filename: '[name].js'
   },
 
   module: {
@@ -35,6 +43,15 @@ const config = {
       
     ],
   },
+
+  plugins: [
+    new webpacl.optimize.CommonsChunkPlugin({
+      name: 'vendor'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
+  ],
 
   resolve: {
     modules: [
