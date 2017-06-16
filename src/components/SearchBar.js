@@ -17,7 +17,7 @@ class SearchBar extends Component {
       >
         <Input 
           fluid 
-          icon='search' 
+          action={{ icon: 'search' }}
           placeholder='Enter in zipcode or City'
           value={this.state.search}
           onChange={ (e, { value }) => this.setState({ search: value }) } 
